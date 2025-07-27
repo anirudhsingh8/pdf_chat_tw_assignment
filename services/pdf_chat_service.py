@@ -94,11 +94,11 @@ class PdfChatService:
     def answer_query(self, session_id: str, input: str) -> str:
         llm = OllamaLLM(model=self.chat_model)
         template = ChatPromptTemplate.from_messages([
-        ("system",'''You are a helpful assistant who answers questions based on the provided context. 
-         If you do not find the answer in the provided context, then politely admit you dont know and move on, 
-         dont make up anything on your own.
-
-         NOTE: KEEP IN MIND TO SIMPLY ANSWER THE QUESTION NO EXTRA STUFF.
+        ("system",'''You are a helpful assistant.
+          Answer only based on the provided context.
+          If the answer is not in the context, respond with “I don’t know based on the provided information.”
+          Do not guess or make up anything.
+          Keep responses concise and direct — no extra commentary.
          
          <context> {context} </context>'''),
          MessagesPlaceholder(variable_name="messages"),

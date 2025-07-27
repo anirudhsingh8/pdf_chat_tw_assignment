@@ -94,7 +94,13 @@ class PdfChatService:
     def answer_query(self, session_id: str, input: str) -> str:
         llm = OllamaLLM(model=self.chat_model)
         template = ChatPromptTemplate.from_messages([
-        ("system",'''You are a helpful assistant who answers questions based on the provided context. If you do not find the answer in the provided context, then politely say I dont know and move on, dont make up anything on your own. <context> {context} </context>'''),
+        ("system",'''You are a helpful assistant who answers questions based on the provided context. 
+         If you do not find the answer in the provided context, then politely admit you dont know and move on, 
+         dont make up anything on your own.
+
+         NOTE: KEEP IN MIND TO SIMPLY ANSWER THE QUESTION NO EXTRA STUFF.
+         
+         <context> {context} </context>'''),
          MessagesPlaceholder(variable_name="messages"),
          ("user", input)
     ])
@@ -119,7 +125,6 @@ class PdfChatService:
         config = {'configurable': {'session_id': session_id}}
         res = chat_with_history_runnable.invoke({"input": input}, config=config)
 
-        print(res)
         return str(res)
 
         

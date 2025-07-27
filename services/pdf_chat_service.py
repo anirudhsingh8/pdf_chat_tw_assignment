@@ -1,6 +1,6 @@
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from langchain_core.vectorstores import VectorStoreRetriever
 from langchain_ollama.embeddings import OllamaEmbeddings
 from langchain_ollama import OllamaLLM
@@ -30,10 +30,10 @@ class PdfChatService:
         
         And returns and instance of the db
     '''
-    def process_uploaded_pdf(self, session_id: str, contents: bytes) -> Chroma:
+    def process_uploaded_pdf(self, session_id: str, contents: bytes, db_dir: str = "./chroma") -> Chroma:
         uploaded_path = self.write_to_temp_dir(session_id, contents)
         chunked_docs = self.load_and_split_pdf(uploaded_path)
-        db = self.generate_embeddings_and_store(session_id=session_id, docs=chunked_docs)
+        db = self.generate_embeddings_and_store(session_id=session_id, docs=chunked_docs, db_dir=db_dir)
 
         return db
 
@@ -56,8 +56,8 @@ class PdfChatService:
         return chunked_docs
     
     # Takes in documents, Generates it embeddings and stores it in a Chroma based vector db
-    def generate_embeddings_and_store(self, session_id: str, docs: list[Document]) -> Chroma:
-        db = self.get_user_chroma_store(session_id=session_id)
+    def generate_embeddings_and_store(self, session_id: str, docs: list[Document], db_dir: str) -> Chroma:
+        db = self.get_user_chroma_store(session_id=session_id, db_dir=db_dir)
         db.add_documents(documents=docs)
 
         return db

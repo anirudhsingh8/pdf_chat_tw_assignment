@@ -1,3 +1,4 @@
 .env
 chroma/*
 temp/*
+test/test_db
